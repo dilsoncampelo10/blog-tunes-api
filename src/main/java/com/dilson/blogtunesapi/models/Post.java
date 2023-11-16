@@ -24,7 +24,7 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "varchar(255) default 'photo.jpg'")
     private String image;
 
     @CreationTimestamp
