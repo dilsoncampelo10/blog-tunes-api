@@ -3,6 +3,7 @@ package com.dilson.blogtunesapi.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dilson.blogtunesapi.dtos.PostDTO;
 import com.dilson.blogtunesapi.models.Post;
 import com.dilson.blogtunesapi.services.PostService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/posts")
@@ -39,13 +43,17 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> create(@RequestBody Post post) {
-        Post newPost = this.postService.create(post);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newPost);
+    public ResponseEntity<Post> create(@RequestBody @Valid PostDTO postDTO) {
+        Post post = new Post();
+        BeanUtils.copyProperties(postDTO, post);
+        this.postService.create(post);
+        return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> update(@RequestBody Post post, @PathVariable UUID id) {
+    public ResponseEntity<Post> update(@RequestBody @Valid PostDTO postDTO, @PathVariable UUID id) {
+        Post post = new Post();
+        BeanUtils.copyProperties(postDTO, post);
         post.setId(id);
         this.postService.update(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
